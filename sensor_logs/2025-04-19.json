@@ -1,0 +1,72 @@
+[
+  {
+    "timestamp": "2025-04-19T08:00:00",
+    "temperature": 16.0,
+    "light": 100,
+    "humidity": 60.0,
+    "moisture": 42.1
+  },
+  {
+    "timestamp": "2025-04-19T09:00:00",
+    "temperature": 16.6,
+    "light": 150,
+    "humidity": 58.8,
+    "moisture": 35.6
+  },
+  {
+    "timestamp": "2025-04-19T10:00:00",
+    "temperature": 17.2,
+    "light": 200,
+    "humidity": 57.6,
+    "moisture": 41.4
+  },
+  {
+    "timestamp": "2025-04-19T11:00:00",
+    "temperature": 17.8,
+    "light": 250,
+    "humidity": 56.4,
+    "moisture": 40.9
+  },
+  {
+    "timestamp": "2025-04-19T12:00:00",
+    "temperature": 18.4,
+    "light": 300,
+    "humidity": 55.2,
+    "moisture": 38.5
+  },
+  {
+    "timestamp": "2025-04-19T13:00:00",
+    "temperature": 19.0,
+    "light": 350,
+    "humidity": 54.0,
+    "moisture": 40.9
+  },
+  {
+    "timestamp": "2025-04-19T14:00:00",
+    "temperature": 19.6,
+    "light": 400,
+    "humidity": 52.8,
+    "moisture": 43.4
+  },
+  {
+    "timestamp": "2025-04-19T15:00:00",
+    "temperature": 20.2,
+    "light": 450,
+    "humidity": 51.6,
+    "moisture": 38.2
+  },
+  {
+    "timestamp": "2025-04-19T16:00:00",
+    "temperature": 20.8,
+    "light": 500,
+    "humidity": 50.4,
+    "moisture": 40.6
+  },
+  {
+    "timestamp": "2025-04-19T17:00:00",
+    "temperature": 21.4,
+    "light": 550,
+    "humidity": 49.2,
+    "moisture": 43.1
+  }
+]

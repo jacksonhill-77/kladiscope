@@ -1,7 +1,7 @@
 import requests
 from openai_api_key import get_api_key
 
-def transcribe_audio(filepath="input.wav"):
+def transcribe_audio(filepath="./samples/sample_voice_light.m4a"):
     api_key = get_api_key()
     with open(filepath, "rb") as audio_file:
         response = requests.post(

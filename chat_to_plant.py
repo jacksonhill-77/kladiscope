@@ -3,6 +3,7 @@ from openai_api_key import get_api_key
 from build_prompt import build_prompt
 from speak import speak
 from current_state_recorder import update_state
+from record_and_transcribe import record_and_transcribe
 
 # === Chat to Plant Handler ===
 def chat_to_plant(user_input):
@@ -37,7 +38,8 @@ def chat_to_plant(user_input):
         return f"Error talking to plant: {e}"
 
 if __name__ == "__main__":
-    response = chat_to_plant("How are you feeling today?")
+    user_input = record_and_transcribe()
+    response = chat_to_plant(user_input)
     print("\n🌿 Kladiscope says:", response)
 
 # Example use:

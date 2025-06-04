@@ -4,6 +4,8 @@ import numpy as np
 import whisper
 import tempfile
 import scipy.io.wavfile
+import warnings
+warnings.filterwarnings("ignore", message="FP16 is not supported on CPU*")
 
 def record_and_transcribe(seconds=5, model_size="base"):
     print("🎙️ Listening...")

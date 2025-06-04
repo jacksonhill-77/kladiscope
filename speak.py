@@ -6,7 +6,7 @@ from openai_api_key import get_api_key
 
 TTS_MODEL = "tts-1"
 VOICE = "alloy"
-MPV_PATH = r"C:\Users\Jackson\scoop\apps\mpv\0.39.0\mpv.exe"
+MPV_PATH = r"mpv"
 LOG_DIR = "spoken_log"
 os.makedirs(LOG_DIR, exist_ok=True)
 

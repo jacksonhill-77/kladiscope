@@ -36,7 +36,7 @@ def speak(text, log=True, play_audio=True):
                 timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 log_file.write(f"[{timestamp}] {text}\n")
 
-        if play_audio and os.path.exists(MPV_PATH):
+        if play_audio:
             subprocess.run([MPV_PATH, filename])
 
         return filename

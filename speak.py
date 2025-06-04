@@ -37,7 +37,8 @@ def speak(text, log=True, play_audio=True):
                 log_file.write(f"[{timestamp}] {text}\n")
 
         if play_audio:
-            subprocess.run([MPV_PATH, filename])
+            print("🔊 Playing audio via mpv...")
+            subprocess.run(["mpv", filename])
 
         return filename
 

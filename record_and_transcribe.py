@@ -25,7 +25,7 @@ async def deepgram_stream(seconds):
 
     async with websockets.connect(
         url,
-        extra_headers={"Authorization": f"Token {DEEPGRAM_API_KEY}"},
+        extra_headers=[("Authorization", f"Token {DEEPGRAM_API_KEY}")],
         ping_interval=5,
         ping_timeout=20
     ) as ws:

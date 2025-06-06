@@ -1,5 +1,4 @@
 # record_and_transcribe.py
-
 import sounddevice as sd
 import numpy as np
 import whisper
@@ -9,10 +8,12 @@ import time
 import warnings
 warnings.filterwarnings("ignore", message="FP16 is not supported on CPU*")
 
-def record_and_transcribe(seconds=5, model_size="base"):
-    print("🎙️ Listening...")
+fs = 44100
+model_size = "base"  # try "tiny.en" next
+model = whisper.load_model(model_size)  # ⬅️ Load ONCE here
 
-    fs = 44100
+def record_and_transcribe(seconds=5):
+    print("🎙️ Listening...")
 
     # 🎙️ RECORD AUDIO
     record_start = time.time()
@@ -27,14 +28,13 @@ def record_and_transcribe(seconds=5, model_size="base"):
         scipy.io.wavfile.write(tmpfile.name, fs, recording)
         save_end = time.time()
 
-        # 🧠 LOAD WHISPER + TRANSCRIBE
+        # 🧠 TRANSCRIBE
         transcribe_start = time.time()
-        model = whisper.load_model(model_size)
         result = model.transcribe(tmpfile.name)
         transcribe_end = time.time()
 
     print(f"⏱️ Save to disk time: {save_end - save_start:.2f} seconds")
-    print(f"⏱️ Whisper load + transcribe time: {transcribe_end - transcribe_start:.2f} seconds")
+    print(f"⏱️ Whisper transcribe time: {transcribe_end - transcribe_start:.2f} seconds")
     print(f"🗣️ Transcript: {result['text'].strip()}")
 
     return result["text"].strip()

@@ -4,7 +4,8 @@ from openai_api_key import get_api_key
 from build_prompt import build_prompt
 from speak import speak
 from current_state_recorder import update_state
-from record_and_transcribe import record_and_transcribe
+from record_and_transcribe import record_and_transcribe, preload_model
+
 
 # === Chat to Plant Handler ===
 def chat_to_plant(user_input):
@@ -45,6 +46,7 @@ def chat_to_plant(user_input):
         return f"Error talking to plant: {e}"
 
 if __name__ == "__main__":
+    preload_model("base")
     full_start = time.time()
     print("🎙️ Listening...")
     record_start = time.time()

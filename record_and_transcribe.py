@@ -1,4 +1,5 @@
 # record_and_transcribe.py
+
 import sounddevice as sd
 import numpy as np
 import whisper
@@ -9,10 +10,16 @@ import warnings
 warnings.filterwarnings("ignore", message="FP16 is not supported on CPU*")
 
 fs = 44100
-model_size = "base"  # try "tiny.en" next
-model = whisper.load_model(model_size)  # ⬅️ Load ONCE here
+model = None  # Global placeholder
+
+def preload_model(model_size="base"):  # Call this from main script
+    global model
+    if model is None:
+        print("🌱 Preloading Whisper model...")
+        model = whisper.load_model(model_size)
 
 def record_and_transcribe(seconds=5):
+    global model
     print("🎙️ Listening...")
 
     # 🎙️ RECORD AUDIO

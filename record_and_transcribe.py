@@ -20,8 +20,7 @@ def record_and_transcribe_deepgram(seconds=5):
 async def deepgram_stream(seconds):
     transcript = ""
 
-    # Open WebSocket
-    url = f"wss://api.deepgram.com/v1/listen?punctuate=true&language=en"
+    url = "wss://api.deepgram.com/v1/listen?punctuate=true&language=en"
     async with websockets.connect(
         url,
         extra_headers={"Authorization": f"Token {DEEPGRAM_API_KEY}"},
@@ -29,7 +28,6 @@ async def deepgram_stream(seconds):
         ping_timeout=20
     ) as ws:
 
-        # Start PyAudio stream
         audio = pyaudio.PyAudio()
         stream = audio.open(format=pyaudio.paInt16,
                             channels=1,
@@ -41,7 +39,7 @@ async def deepgram_stream(seconds):
             for _ in range(0, int(RATE / CHUNK * seconds)):
                 data = stream.read(CHUNK, exception_on_overflow=False)
                 await ws.send(data)
-            await ws.send(b"")  # Close stream
+            await ws.send(b"")
 
         async def receive_transcript():
             nonlocal transcript
@@ -50,7 +48,7 @@ async def deepgram_stream(seconds):
                 if "channel" in msg_json and "alternatives" in msg_json["channel"]:
                     words = msg_json["channel"]["alternatives"][0].get("transcript", "")
                     if words:
-                        transcript = words  # update live
+                        transcript = words
                 if msg_json.get("is_final"):
                     break
 

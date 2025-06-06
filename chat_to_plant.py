@@ -4,8 +4,7 @@ from openai_api_key import get_api_key
 from build_prompt import build_prompt
 from speak import speak
 from current_state_recorder import update_state
-from record_and_transcribe_deepgram import record_and_transcribe_deepgram as record_and_transcribe
-
+from record_and_transcribe import record_and_transcribe_deepgram as record_and_transcribe
 
 # === Chat to Plant Handler ===
 def chat_to_plant(user_input):
@@ -45,12 +44,13 @@ def chat_to_plant(user_input):
     except Exception as e:
         return f"Error talking to plant: {e}"
 
+
 if __name__ == "__main__":
-    preload_model("tiny")
     full_start = time.time()
+
     print("🎙️ Listening...")
     record_start = time.time()
-    user_input = record_and_transcribe()
+    user_input = record_and_transcribe(seconds=5)  # You can tweak seconds here
     record_end = time.time()
     print(f"⏱️ Recording + STT time: {record_end - record_start:.2f} seconds")
 

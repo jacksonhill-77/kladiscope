@@ -23,14 +23,13 @@ async def deepgram_stream(seconds):
     url = "wss://api.deepgram.com/v1/listen?punctuate=true&language=en"
     headers = [("Authorization", f"Token {DEEPGRAM_API_KEY}")]
 
-    ws = await websockets.client.connect(
+    async with websockets.connect(
         uri=url,
         extra_headers=headers,
         ping_interval=5,
         ping_timeout=20
-    )
+    ) as ws:
 
-    try:
         audio = pyaudio.PyAudio()
         stream = audio.open(format=pyaudio.paInt16,
                             channels=1,
@@ -60,9 +59,6 @@ async def deepgram_stream(seconds):
         stream.stop_stream()
         stream.close()
         audio.terminate()
-
-    finally:
-        await ws.close()
 
     print(f"🗣️ Transcript: {transcript}")
     return transcript.strip()

@@ -5,7 +5,6 @@ from build_prompt import build_prompt
 from speak import speak
 from current_state_recorder import update_state
 from record_and_transcribe import record_and_transcribe_deepgram as record_and_transcribe
-print("✅ record_and_transcribe module loaded")
 
 # === Chat to Plant Handler ===
 def chat_to_plant(user_input):

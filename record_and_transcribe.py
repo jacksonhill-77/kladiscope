@@ -24,7 +24,7 @@ async def deepgram_stream(seconds):
     headers = [("Authorization", f"Token {DEEPGRAM_API_KEY}")]
 
     async with websockets.connect(
-        uri=url,
+        url,  # ✅ MUST be positional, not uri=url
         extra_headers=headers,
         ping_interval=5,
         ping_timeout=20
@@ -41,7 +41,7 @@ async def deepgram_stream(seconds):
             for _ in range(0, int(RATE / CHUNK * seconds)):
                 data = stream.read(CHUNK, exception_on_overflow=False)
                 await ws.send(data)
-            await ws.send(b"")
+            await ws.send(b"")  # Send empty binary to signal end
 
         async def receive_transcript():
             nonlocal transcript

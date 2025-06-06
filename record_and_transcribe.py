@@ -23,7 +23,7 @@ async def deepgram_stream(seconds):
     url = "wss://api.deepgram.com/v1/listen?punctuate=true&language=en"
     async with websockets.connect(
         url,
-        extra_headers={"Authorization": f"Token {DEEPGRAM_API_KEY}"},
+        extra_headers=[("Authorization", f"Token {DEEPGRAM_API_KEY}")],
         ping_interval=5,
         ping_timeout=20
     ) as ws:

@@ -1,8 +1,5 @@
 import asyncio
 import os
-os.environ["PYTHONWARNINGS"] = "ignore"
-os.environ["ALSA_CARD"] = "default"
-os.environ["SDL_AUDIODRIVER"] = "dsp"
 import json
 import pyaudio
 import websockets
@@ -35,11 +32,14 @@ async def deepgram_stream(seconds):
 
 
         audio = pyaudio.PyAudio()
-        stream = audio.open(format=pyaudio.paInt16,
-                            channels=1,
-                            rate=RATE,
-                            input=True,
-                            frames_per_buffer=CHUNK)
+        stream = audio.open(
+            format=pyaudio.paInt16,
+            channels=1,
+            rate=RATE,
+            input=True,
+            input_device_index=1,
+            frames_per_buffer=CHUNK
+        )
 
         async def send_audio():
             print("DEBUG: Recording mic input...")  # Inside send_audio()

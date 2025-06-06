@@ -21,16 +21,15 @@ async def deepgram_stream(seconds):
     transcript = ""
 
     # Build headers manually in the URL
-    url = (
-        "wss://api.deepgram.com/v1/listen?punctuate=true&language=en"
-        f"&access_token={DEEPGRAM_API_KEY}"
-    )
+    url = "wss://api.deepgram.com/v1/listen?punctuate=true&language=en"
 
     async with websockets.connect(
         url,
+        extra_headers={"Authorization": f"Token {DEEPGRAM_API_KEY}"},
         ping_interval=5,
         ping_timeout=20
     ) as ws:
+
 
         audio = pyaudio.PyAudio()
         stream = audio.open(format=pyaudio.paInt16,

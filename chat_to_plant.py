@@ -46,7 +46,7 @@ def chat_to_plant(user_input):
         return f"Error talking to plant: {e}"
 
 if __name__ == "__main__":
-    preload_model("base")
+    preload_model("tiny")
     full_start = time.time()
     print("🎙️ Listening...")
     record_start = time.time()

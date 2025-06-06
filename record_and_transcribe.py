@@ -20,12 +20,14 @@ def record_and_transcribe_deepgram(seconds=5):
 async def deepgram_stream(seconds):
     transcript = ""
 
-    url = "wss://api.deepgram.com/v1/listen?punctuate=true&language=en"
-    headers = [("Authorization", f"Token {DEEPGRAM_API_KEY}")]
+    # Build headers manually in the URL
+    url = (
+        "wss://api.deepgram.com/v1/listen?punctuate=true&language=en"
+        f"&access_token={DEEPGRAM_API_KEY}"
+    )
 
     async with websockets.connect(
-        url,  # ✅ MUST be positional, not uri=url
-        extra_headers=headers,
+        url,
         ping_interval=5,
         ping_timeout=20
     ) as ws:
@@ -41,7 +43,7 @@ async def deepgram_stream(seconds):
             for _ in range(0, int(RATE / CHUNK * seconds)):
                 data = stream.read(CHUNK, exception_on_overflow=False)
                 await ws.send(data)
-            await ws.send(b"")  # Send empty binary to signal end
+            await ws.send(b"")
 
         async def receive_transcript():
             nonlocal transcript

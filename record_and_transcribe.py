@@ -1,47 +1,64 @@
-# record_and_transcribe.py
+import asyncio
+import os
+import json
+import pyaudio
+import websockets
 
-import sounddevice as sd
-import numpy as np
-import whisper
-import tempfile
-import scipy.io.wavfile
-import time
-import warnings
-warnings.filterwarnings("ignore", message="FP16 is not supported on CPU*")
+DEEPGRAM_API_KEY = os.getenv("DEEPGRAM_API_KEY")
+if not DEEPGRAM_API_KEY:
+    raise ValueError("Deepgram API key not found. Set DEEPGRAM_API_KEY in your environment.")
 
-fs = 44100
-model = None  # Global placeholder
+# Mic settings
+RATE = 16000
+CHUNK = 1024
 
-def preload_model(model_size="base"):  # Call this from main script
-    global model
-    if model is None:
-        print("🌱 Preloading Whisper model...")
-        model = whisper.load_model(model_size)
+def record_and_transcribe_deepgram(seconds=5):
+    print("🎙️ Streaming to Deepgram...")
+    return asyncio.run(deepgram_stream(seconds))
 
-def record_and_transcribe(seconds=5):
-    global model
-    print("🎙️ Listening...")
 
-    # 🎙️ RECORD AUDIO
-    record_start = time.time()
-    recording = sd.rec(int(seconds * fs), samplerate=fs, channels=1, dtype="int16")
-    sd.wait()
-    record_end = time.time()
-    print(f"⏱️ Mic recording time: {record_end - record_start:.2f} seconds")
+async def deepgram_stream(seconds):
+    transcript = ""
 
-    # 💾 SAVE TO TEMP FILE
-    save_start = time.time()
-    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmpfile:
-        scipy.io.wavfile.write(tmpfile.name, fs, recording)
-        save_end = time.time()
+    # Open WebSocket
+    url = f"wss://api.deepgram.com/v1/listen?punctuate=true&language=en"
+    async with websockets.connect(
+        url,
+        extra_headers={"Authorization": f"Token {DEEPGRAM_API_KEY}"},
+        ping_interval=5,
+        ping_timeout=20
+    ) as ws:
 
-        # 🧠 TRANSCRIBE
-        transcribe_start = time.time()
-        result = model.transcribe(tmpfile.name)
-        transcribe_end = time.time()
+        # Start PyAudio stream
+        audio = pyaudio.PyAudio()
+        stream = audio.open(format=pyaudio.paInt16,
+                            channels=1,
+                            rate=RATE,
+                            input=True,
+                            frames_per_buffer=CHUNK)
 
-    print(f"⏱️ Save to disk time: {save_end - save_start:.2f} seconds")
-    print(f"⏱️ Whisper transcribe time: {transcribe_end - transcribe_start:.2f} seconds")
-    print(f"🗣️ Transcript: {result['text'].strip()}")
+        async def send_audio():
+            for _ in range(0, int(RATE / CHUNK * seconds)):
+                data = stream.read(CHUNK, exception_on_overflow=False)
+                await ws.send(data)
+            await ws.send(b"")  # Close stream
 
-    return result["text"].strip()
+        async def receive_transcript():
+            nonlocal transcript
+            async for msg in ws:
+                msg_json = json.loads(msg)
+                if "channel" in msg_json and "alternatives" in msg_json["channel"]:
+                    words = msg_json["channel"]["alternatives"][0].get("transcript", "")
+                    if words:
+                        transcript = words  # update live
+                if msg_json.get("is_final"):
+                    break
+
+        await asyncio.gather(send_audio(), receive_transcript())
+
+        stream.stop_stream()
+        stream.close()
+        audio.terminate()
+
+    print(f"🗣️ Transcript: {transcript}")
+    return transcript.strip()
